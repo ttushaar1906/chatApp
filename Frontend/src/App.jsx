@@ -52,14 +52,14 @@ function App() {
 
     await socket.emit("send_message", messageContent);
     setMessageList([...messageList, messageContent.content]);
-    setMessage("");
+    sendMessage("");
   };
   return (
     <>
       <div className=" bg-secondary">
         {!loggedIn ? (
           <div className=" flex justify-center items-center h-screen">
-            <div className="flex flex-col w-full bg-chatBubbleSent shadow-lg p-6">
+            <div className="flex flex-col w-max[1200px] w-[80%] rounded-md bg-chatBubbleSent shadow-lg p-6">
               <h2 className=" text-center font-bold text-textColor text-3xl my-4">
                 Chat App
               </h2>
@@ -88,16 +88,17 @@ function App() {
             </div>
           </div>
         ) : (
-          <div className="p-2">
+          <div className="p-2 bg-primary">
+            <h1 className=" text-center p-4 font-bold text-2xl">{room}</h1>
             <div className="flex flex-col justify-center w-3/5 mx-auto h-screen bg-chatBubbleSent">
-              <div className="border p-4 bg-gray-100 overflow-y-auto flex-1 ">
+              <div className="border p-4 bg-gray-100 overflow-y-auto flex-1 h-[90vh]">
                 {messageList.map((val, key) => {
                   const isCurrentUser = val.author === name;
                   return (
                     <div
                       key={key}
                       className={`flex mb-2 ${
-                        isCurrentUser ? "justify-end" : "justify-start"
+                        isCurrentUser ? "justify-end"  : "justify-start"
                       }`}
                     >
                       <div
@@ -129,7 +130,7 @@ function App() {
                   );
                 })}
               </div>
-              <div className="flex border-t mt-2">
+              <div className="flex border-t">
                 <input
                   type="text"
                   placeholder="Type your message..."
