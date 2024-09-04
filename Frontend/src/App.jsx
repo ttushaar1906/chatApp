@@ -27,6 +27,13 @@ function App() {
     });
   }, [CONNECTION_PORT]);
 
+  useEffect(() => {
+    socket.on("receive_message", (data) => {
+      console.log(data);
+      setMessageList([...messageList, data]);
+    });
+  });
+
   const connectToRoom = () => {
     setLoggedIn(true);
     socket.emit("join_room", room);
@@ -34,7 +41,7 @@ function App() {
   };
 
   // function to send message
-  const sendMessage = () => {
+  const sendMessage = async () => {
     let messageContent = {
       room: room,
       content: {
@@ -43,22 +50,22 @@ function App() {
       },
     };
 
-    socket.emit("send_message", messageContent);
+    await socket.emit("send_message", messageContent);
     setMessageList([...messageList, messageContent.content]);
     setMessage("");
   };
   return (
     <>
-      <div className="bg-chatBubbleSent">
+      <div className=" bg-secondary">
         {!loggedIn ? (
           <div className=" flex justify-center items-center h-screen">
-            <div className="flex border flex-col w-full">
+            <div className="flex flex-col w-full bg-chatBubbleSent shadow-lg p-6">
               <h2 className=" text-center font-bold text-textColor text-3xl my-4">
                 Chat App
               </h2>
               <input
                 type="text"
-                className=" my-2 p-2 w-1/2 mx-auto focus:outline-none rounded-md text-textColor font-medium"
+                className=" my-2 p-2 w-1/2 mx-auto focus:outline-none rounded-md text-textColor font-medium shadow-lg"
                 placeholder="Name..."
                 onChange={(e) => {
                   setName(e.target.value);
@@ -66,7 +73,7 @@ function App() {
               />
               <input
                 type="text"
-                className=" my-2 p-2 w-1/2 mx-auto focus:outline-none rounded-md text-textColor font-medium"
+                className=" my-2 p-2 w-1/2 mx-auto focus:outline-none rounded-md text-textColor font-medium shadow-lg"
                 placeholder="Room.."
                 onChange={(e) => {
                   setRoom(e.target.value);
@@ -74,39 +81,70 @@ function App() {
               />
               <button
                 onClick={connectToRoom}
-                className="bg-secondary block m-auto py-2 px-3 font-semibold rounded-md my-2 hover:opacity-95"
+                className="bg-secondary block m-auto py-2 px-3 font-semibold rounded-md my-2 hover:opacity-95 shadow-lg"
               >
                 Enter Chat
               </button>
             </div>
           </div>
         ) : (
-          <div className="flex flex-col justify-center w-3/5 mx-auto h-screen">
-            <div className="border p-4">
-              {messageList.map((val, key) => {
-                return (
-                  <h1>
-                    <h2 className=" font-bold">{val.author} </h2>
-                   <p> {val.message} </p>
-                  </h1>
-                );
-              })}
-            </div>
-            <div className="flex border">
-              <input
-                type="text"
-                placeholder="Type your message..."
-                className="py-2 px-3 w-full border-none rounded-none focus:outline-none"
-                onChange={(e) => {
-                  setMessage(e.target.value);
-                }}
-              />
-              <button
-                className="bg-secondary py-2 px-4 font-semibold hover:opacity-90"
-                onClick={sendMessage}
-              >
-                Send
-              </button>
+          <div className="p-2">
+            <div className="flex flex-col justify-center w-3/5 mx-auto h-screen bg-chatBubbleSent">
+              <div className="border p-4 bg-gray-100 overflow-y-auto flex-1 ">
+                {messageList.map((val, key) => {
+                  const isCurrentUser = val.author === name;
+                  return (
+                    <div
+                      key={key}
+                      className={`flex mb-2 ${
+                        isCurrentUser ? "justify-end" : "justify-start"
+                      }`}
+                    >
+                      <div
+                        className={`max-w-[60%] ${
+                          isCurrentUser ? "text-right" : "text-left"
+                        }`}
+                      >
+                        <h2
+                          className={`font-bold mb-1 text-textColor${
+                            isCurrentUser
+                              ? "text-chatBubbleSent"
+                              : "text-chatBubbleReceived"
+                          }`}
+                          id={isCurrentUser ? "You" : "Other"}
+                        >
+                          {val.author}
+                        </h2>
+                        <div
+                          className={`p-2 rounded-lg ${
+                            isCurrentUser
+                              ? "bg-secondary text-textColor"
+                              : "bg-chatBubbleReceived text-textColor"
+                          }`}
+                        >
+                          <p>{val.message}</p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="flex border-t mt-2">
+                <input
+                  type="text"
+                  placeholder="Type your message..."
+                  className="py-2 px-3 w-full border-none rounded-none focus:outline-none"
+                  onChange={(e) => {
+                    setMessage(e.target.value);
+                  }}
+                />
+                <button
+                  className="bg-secondary py-2 px-4 font-semibold hover:opacity-90"
+                  onClick={sendMessage}
+                >
+                  Send
+                </button>
+              </div>
             </div>
           </div>
         )}
