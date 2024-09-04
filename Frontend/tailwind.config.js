@@ -11,7 +11,8 @@ export default {
       chatBubbleSent: '#E1F5FE', // Light Blue
       chatBubbleReceived: '#FFFFFF', // White
       notification: '#FF6F61', // Soft Red
-      textColor : '#4A4A4A '
+      textColor : '#4A4A4A ',
+      white: '#fff'
     },
   },
   plugins: [],

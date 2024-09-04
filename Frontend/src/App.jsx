@@ -49,11 +49,13 @@ function App() {
         message: message,
       },
     };
-
+  
     await socket.emit("send_message", messageContent);
     setMessageList([...messageList, messageContent.content]);
-    sendMessage("");
+    setMessage("");  // Log to confirm clearing
+    console.log("Message after setMessage:", message);
   };
+  
   return (
     <>
       <div className=" bg-secondary">
@@ -61,7 +63,7 @@ function App() {
           <div className=" flex justify-center items-center h-screen">
             <div className="flex flex-col w-max[1200px] w-[80%] rounded-md bg-chatBubbleSent shadow-lg p-6">
               <h2 className=" text-center font-bold text-textColor text-3xl my-4">
-                Chat App
+              Chatgram
               </h2>
               <input
                 type="text"
@@ -88,10 +90,10 @@ function App() {
             </div>
           </div>
         ) : (
-          <div className="p-2 bg-primary">
-            <h1 className=" text-center p-4 font-bold text-2xl">{room}</h1>
-            <div className="flex flex-col justify-center w-3/5 mx-auto h-screen bg-chatBubbleSent">
-              <div className="border p-4 bg-gray-100 overflow-y-auto flex-1 h-[90vh]">
+          <div className="p-2 bg-primary h-screen">
+            <h1 className=" text-center p-4 font-bold text-2xl">Chatgram</h1>
+            <div className="flex flex-col justify-center w-3/5 mx-auto h-[80vh] bg-chatBubbleSent" >
+              <div className="border p-4 bg-gray-100 overflow-y-auto flex-1">
                 {messageList.map((val, key) => {
                   const isCurrentUser = val.author === name;
                   return (
