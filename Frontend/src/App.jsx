@@ -49,13 +49,13 @@ function App() {
         message: message,
       },
     };
-  
+
     await socket.emit("send_message", messageContent);
     setMessageList([...messageList, messageContent.content]);
-    setMessage("");  // Log to confirm clearing
+    setMessage(""); // Log to confirm clearing
     console.log("Message after setMessage:", message);
   };
-  
+
   return (
     <>
       <div className=" bg-secondary">
@@ -63,7 +63,7 @@ function App() {
           <div className=" flex justify-center items-center h-screen">
             <div className="flex flex-col w-max[1200px] w-[80%] rounded-md bg-chatBubbleSent shadow-lg p-6">
               <h2 className=" text-center font-bold text-textColor text-3xl my-4">
-              Chatgram
+                Chatgram
               </h2>
               <input
                 type="text"
@@ -92,15 +92,25 @@ function App() {
         ) : (
           <div className="p-2 bg-primary h-screen">
             <h1 className=" text-center p-4 font-bold text-2xl">Chatgram</h1>
-            <div className="flex flex-col justify-center w-3/5 mx-auto h-[80vh] bg-chatBubbleSent" >
-              <div className="border p-4 bg-gray-100 overflow-y-auto flex-1">
+            <div className="relative flex flex-col justify-center w-3/5 mx-auto h-[80vh] bg-chatBubbleSent">
+              <div className="absolute inset-0 overflow-hidden">
+                <img
+                  src="../src/images/chatBg.avif"
+                  className="w-full h-full object-cover opacity-10"
+                  alt="Chat Background"
+                />
+              </div>
+              <div
+                className="border p-4 bg-gray-100 overflow-y-auto flex-1"
+                style={{ position: "relative" }}
+              >
                 {messageList.map((val, key) => {
                   const isCurrentUser = val.author === name;
                   return (
                     <div
                       key={key}
                       className={`flex mb-2 ${
-                        isCurrentUser ? "justify-end"  : "justify-start"
+                        isCurrentUser ? "justify-end" : "justify-start"
                       }`}
                     >
                       <div
@@ -132,11 +142,12 @@ function App() {
                   );
                 })}
               </div>
-              <div className="flex border-t">
+              <div className="flex border z-50 ">
                 <input
                   type="text"
                   placeholder="Type your message..."
-                  className="py-2 px-3 w-full border-none rounded-none focus:outline-none"
+                  className="py-2 px-3 w-full border-none rounded-none focus:outline-none "
+                  value={message}
                   onChange={(e) => {
                     setMessage(e.target.value);
                   }}
