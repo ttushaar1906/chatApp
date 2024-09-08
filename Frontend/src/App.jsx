@@ -1,26 +1,25 @@
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
-import { FaVideo } from "react-icons/fa";
+import { FaVideo, FaArrowLeft, FaUserCircle } from "react-icons/fa";
 import { IoCall } from "react-icons/io5";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { FaArrowLeft } from "react-icons/fa";
-import { FaUserCircle } from "react-icons/fa";
+import EmojiPicker from "emoji-picker-react";
 
 let socket;
-const CONNECTION_PORT = "http://localhost:3000"; // Ensure this matches your backend
+const CONNECTION_PORT = "http://localhost:3000";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
-
-  // After Login
-  const [message, setMessage] = useState();
+  // after login
+  const [message, setMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
+  const [showEmoji, setShowEmoji] = useState(false);
 
   useEffect(() => {
     socket = io(CONNECTION_PORT, {
-      transports: ["websocket", "polling"], // Ensure both transports are supported
+      transports: ["websocket", "polling"],
     });
 
     socket.on("connect", () => {
@@ -30,62 +29,79 @@ function App() {
     socket.on("connect_error", (err) => {
       console.log("Connection error:", err.message);
     });
-  }, [CONNECTION_PORT]);
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     socket.on("receive_message", (data) => {
-      console.log(data);
-      setMessageList([...messageList, data]);
+      setMessageList((prevList) => [...prevList, data]);
     });
-  });
+
+    return () => {
+      socket.off("receive_message");
+    };
+  }, [messageList]);
 
   const connectToRoom = () => {
-    setLoggedIn(true);
-    socket.emit("join_room", room);
-    console.log("Joined room", room);
+    if (name && room) {
+      setLoggedIn(true);
+      socket.emit("join_room", room);
+      console.log("Joined room", room);
+    } else {
+      alert("Please enter both name and room");
+    }
   };
 
-  // function to send message
   const sendMessage = async () => {
-    let messageContent = {
-      room: room,
-      content: {
-        author: name,
-        message: message,
-      },
-    };
+    if (message.trim()) {
+      const messageContent = {
+        room: room,
+        content: {
+          author: name,
+          message: message,
+        },
+      };
 
-    await socket.emit("send_message", messageContent);
-    setMessageList([...messageList, messageContent.content]);
-    setMessage(""); // Log to confirm clearing
-    console.log("Message after setMessage:", message);
+      await socket.emit("send_message", messageContent);
+      setMessageList((prevList) => [...prevList, messageContent.content]);
+      setMessage(""); // Clear input after sending
+      setShowEmoji("");
+    }
   };
 
-  const logout = () => setLoggedIn(false);
+  const logout = () => {
+    setLoggedIn(false);
+    setRoom("");
+    setMessageList([]);
+  };
+
+  const handleEmojiClick = (emojiObject) => {
+    setMessage((prevMessage) => prevMessage + emojiObject.emoji);
+  };
+
   return (
     <>
-      <div className=" bg-secondary">
+      <div className="bg-secondary">
         {!loggedIn ? (
-          <div className=" flex justify-center items-center h-screen">
+          <div className="flex justify-center items-center h-screen">
             <div className="flex flex-col w-max[1200px] w-[80%] rounded-md bg-chatBubbleSent shadow-lg p-6">
-              <h2 className=" text-center font-bold text-textColor text-3xl my-4">
+              <h2 className="text-center font-bold text-textColor text-3xl my-4">
                 Chatgram
               </h2>
               <input
                 type="text"
-                className=" my-2 p-2 w-1/2 mx-auto focus:outline-none rounded-md text-textColor font-medium shadow-lg"
+                className="my-2 p-2 w-1/2 mx-auto focus:outline-none rounded-md text-textColor font-medium shadow-lg"
                 placeholder="Name..."
-                onChange={(e) => {
-                  setName(e.target.value);
-                }}
+                onChange={(e) => setName(e.target.value)}
               />
               <input
                 type="text"
-                className=" my-2 p-2 w-1/2 mx-auto focus:outline-none rounded-md text-textColor font-medium shadow-lg"
+                className="my-2 p-2 w-1/2 mx-auto focus:outline-none rounded-md text-textColor font-medium shadow-lg"
                 placeholder="Room.."
-                onChange={(e) => {
-                  setRoom(e.target.value);
-                }}
+                onChange={(e) => setRoom(e.target.value)}
               />
               <button
                 onClick={connectToRoom}
@@ -97,12 +113,15 @@ function App() {
           </div>
         ) : (
           <div className="p-2 bg-primary h-screen">
-            <h1 className=" text-center p-4 font-bold text-2xl">Chatgram</h1>
+            <h1 className="text-center p-4 font-bold text-2xl">Chatgram</h1>
             <div className="relative flex flex-col justify-center w-3/5 mx-auto h-[80vh] bg-chatBubbleSent border-2">
               <div className="flex bg-secondary z-50 align-middle justify-between py-2 px-4 border-b-2">
                 <div className="flex gap-4 align-middle">
-                  <FaArrowLeft className="my-auto cursor-pointer text-sm" onClick={logout} />
-                  <FaUserCircle className="my-auto text-4xl"/>
+                  <FaArrowLeft
+                    className="my-auto cursor-pointer text-sm"
+                    onClick={logout}
+                  />
+                  <FaUserCircle className="my-auto text-4xl" />
                   <h2 className="font-extrabold text-lg bg-secondary my-auto">
                     {room}
                   </h2>
@@ -120,10 +139,7 @@ function App() {
                   alt="Chat Background"
                 />
               </div>
-              <div
-                className=" p-4 bg-gray-100 overflow-y-auto flex-1"
-                style={{ position: "relative" }}
-              >
+              <div className="p-4 bg-gray-100 overflow-y-auto flex-1">
                 {messageList.map((val, key) => {
                   const isCurrentUser = val.author === name;
                   return (
@@ -139,12 +155,11 @@ function App() {
                         }`}
                       >
                         <h2
-                          className={`font-bold mb-1 text-textColor${
+                          className={`font-bold mb-1 ${
                             isCurrentUser
                               ? "text-chatBubbleSent"
                               : "text-chatBubbleReceived"
                           }`}
-                          id={isCurrentUser ? "You" : "Other"}
                         >
                           {val.author}
                         </h2>
@@ -166,12 +181,21 @@ function App() {
                 <input
                   type="text"
                   placeholder="Type your message..."
-                  className="py-2 px-3 w-full border-none rounded-none focus:outline-none "
+                  className="py-2 px-3 w-full border-none rounded-none focus:outline-none"
                   value={message}
-                  onChange={(e) => {
-                    setMessage(e.target.value);
-                  }}
+                  onChange={(e) => setMessage(e.target.value)}
                 />
+                <button
+                  className=" bg-chatBubbleReceived py-2 px-4 font-bold hover:opacity-90 shadow-lg"
+                  onClick={() => setShowEmoji((prev) => !prev)}
+                >
+                  😊
+                </button>
+                {showEmoji && (
+                  <div className="absolute bottom-12 right-4">
+                    <EmojiPicker onEmojiClick={handleEmojiClick} />
+                  </div>
+                )}
                 <button
                   className="bg-secondary py-2 px-4 font-bold hover:opacity-90"
                   onClick={sendMessage}

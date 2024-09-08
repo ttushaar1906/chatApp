@@ -6,7 +6,7 @@ export default {
   ],
   theme: {
     colors: {
-      primary: '#4A90E2', // Cool Blue
+      primary: '#87ccfa', // Cool Blue
       secondary: '#50E3C2', // Turquoise Green
       chatBubbleSent: '#E1F5FE', // Light Blue
       chatBubbleReceived: '#FFFFFF', // White
