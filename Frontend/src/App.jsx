@@ -139,7 +139,7 @@ function App() {
                   alt="Chat Background"
                 />
               </div>
-              <div className="p-4 bg-gray-100 overflow-y-auto flex-1">
+              <div className="p-4 overflow-y-auto flex-1 z-50">
                 {messageList.map((val, key) => {
                   const isCurrentUser = val.author === name;
                   return (
@@ -157,8 +157,8 @@ function App() {
                         <h2
                           className={`font-bold mb-1 ${
                             isCurrentUser
-                              ? "text-chatBubbleSent"
-                              : "text-chatBubbleReceived"
+                              ? "text-textColor"
+                              : "text-textColor"
                           }`}
                         >
                           {val.author}
