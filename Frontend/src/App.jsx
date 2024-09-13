@@ -82,6 +82,9 @@ function App() {
     setMessage((prevMessage) => prevMessage + emojiObject.emoji);
   };
 
+  const time = new Date().toLocaleTimeString()
+  console.log(time);
+  
   return (
     <>
       <div className="bg-secondary">
@@ -89,7 +92,7 @@ function App() {
           <div className="flex justify-center items-center h-screen">
             <div className="flex flex-col w-max[1200px] w-[80%] rounded-md bg-chatBubbleSent shadow-lg p-6">
               <h2 className="text-center font-bold text-textColor text-3xl my-4">
-                Chatgram
+              Whisper
               </h2>
               <input
                 type="text"
@@ -113,7 +116,7 @@ function App() {
           </div>
         ) : (
           <div className="p-2 bg-primary h-screen">
-            <h1 className="text-center p-4 font-bold text-2xl">Chatgram</h1>
+            <h1 className="text-center p-4 font-bold text-2xl">Whisper</h1>
             <div className="relative flex flex-col justify-center w-3/5 mx-auto h-[80vh] bg-chatBubbleSent border-2">
               <div className="flex bg-secondary z-50 align-middle justify-between py-2 px-4 border-b-2">
                 <div className="flex gap-4 align-middle">

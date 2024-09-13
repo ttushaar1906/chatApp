@@ -12,7 +12,9 @@ export default {
       chatBubbleReceived: '#FFFFFF', // White
       notification: '#FF6F61', // Soft Red
       textColor : '#4A4A4A ',
-      white: '#fff'
+      white: '#fff',
+      black : '#000'
+
     },
   },
   plugins: [],
