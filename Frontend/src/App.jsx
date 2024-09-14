@@ -65,7 +65,8 @@ function App() {
 
   const sendMessage = async () => {
     if (message.trim()) {
-      const currentTime = new Date().toLocaleTimeString([], {  // empty array -> it let the browser decide the locale environment automatically
+      const currentTime = new Date().toLocaleTimeString([], {
+        // empty array -> it let the browser decide the locale environment automatically
         hour: "2-digit",
         minute: "2-digit",
       });
@@ -102,7 +103,13 @@ function App() {
         <div className="flex justify-center items-center h-screen">
           <div className="flex flex-col w-max[1200px] w-[80%] rounded-md bg-chatBubbleSent shadow-lg p-6">
             <h2 className="text-center font-bold text-textColor text-3xl my-4">
-              Whisper
+              <img
+                src="../src/images/Whisper.png"
+                className="w-12 block m-auto"
+                alt=""
+                srcset=""
+              />
+              Giggle
             </h2>
             <input
               type="text"
@@ -115,6 +122,11 @@ function App() {
               className="my-2 p-2 w-1/2 mx-auto focus:outline-none rounded-md text-textColor font-medium shadow-lg"
               placeholder="Room.."
               onChange={(e) => setRoom(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  connectToRoom();
+                }
+              }}
             />
             <button
               onClick={connectToRoom}
@@ -126,7 +138,15 @@ function App() {
         </div>
       ) : (
         <div className="p-2 bg-primary h-screen">
-          <h1 className="text-center p-4 font-bold text-2xl">Whisper</h1>
+          <div className="flex justify-center items-center my-4 gap-4">
+            <img
+              src="../src/images/Whisper.png"
+              className="w-12"
+              alt=""
+              srcset=""
+            />
+            <h1 className="font-bold text-2xl">Giggle</h1>
+          </div>
           <div className="relative flex flex-col justify-center w-3/5 mx-auto h-[80vh] bg-chatBubbleSent border-2">
             <div className="flex bg-secondary z-50 align-middle justify-between py-2 px-4 border-b-2">
               <div className="flex gap-4 align-middle">
@@ -158,7 +178,7 @@ function App() {
                 return (
                   <div
                     key={key}
-                    className={`flex mb-2 ${
+                    className={`flex mb-2 font-medium ${
                       isCurrentUser ? "justify-end" : "justify-start"
                     }`}
                   >
@@ -169,9 +189,7 @@ function App() {
                     >
                       <h2
                         className={`font-bold mb-1 ${
-                          isCurrentUser
-                            ? "text-textColor"
-                            : "text-textColor"
+                          isCurrentUser ? "text-textColor" : "text-textColor"
                         }`}
                       >
                         {val.author}
@@ -185,7 +203,9 @@ function App() {
                       >
                         <p>{val.message}</p>
                       </div>
-                        <span className="text-xs text-black font-normal">{val.time}</span>
+                      <span className="text-xs text-black font-normal">
+                        {val.time}
+                      </span>
                     </div>
                   </div>
                 );
@@ -196,9 +216,14 @@ function App() {
               <input
                 type="text"
                 placeholder="Type your message..."
-                className="py-2 px-3 w-full border-none rounded-none focus:outline-none"
+                className="py-2 px-3 w-full border-none rounded-none focus:outline-none "
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    sendMessage();
+                  }
+                }}
               />
               <button
                 className=" bg-chatBubbleReceived py-2 px-4 font-bold hover:opacity-90 shadow-lg"
