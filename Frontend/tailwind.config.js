@@ -14,7 +14,6 @@ export default {
       textColor : '#4A4A4A ',
       white: '#fff',
       black : '#000'
-
     },
   },
   plugins: [],
