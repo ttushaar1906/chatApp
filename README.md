@@ -36,17 +36,17 @@ Giggle is a real-time chat application that allows users to join chat rooms and 
 
   ## How to Use
   
-  1 Enter your name and a room name to join.
-  2 Start chatting with others in the same room.
-  3 Send messages, use emojis, and enjoy a real-time chat experience.
+  - Enter your name and a room name to join.
+  - Start chatting with others in the same room.
+  - Send messages, use emojis, and enjoy a real-time chat experience.
 
   ## Contributing
 
   Contributions are welcome! Feel free to submit a pull request or open an issue for any bugs or feature requests.
 
   ## Acknowledgments
-  1 Built with React, Socket.IO, and TailwindCSS.
-  2 Inspired by the need for simple, intuitive, and real-time communication apps.
+  - Built with React, Socket.IO, and TailwindCSS.
+  - Inspired by the need for simple, intuitive, and real-time communication apps.
   
 This `README.md` provides clear instructions on installation, usage, and features, and is ready for your repository. You can modify the links to the live demo and screenshots if applicable.
 
