@@ -11,9 +11,11 @@ Giggle is a real-time chat application that allows users to join chat rooms and 
 
 
 ## Screenshots
+<img src="./Frontend//src//images/LoginPageSS.png" >
 
-![Giggle Screenshot 1](https://i.postimg.cc/MGc6xtDy/image.png)
-![Giggle Screenshot 2](https://i.postimg.cc/PxR5Y95V/chatApp.png)
+#
+
+<img src="./Frontend//src//images/ChatSS.png" >
 
 ## Tech Stack
 
